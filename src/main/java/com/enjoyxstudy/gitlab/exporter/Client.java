@@ -40,11 +40,11 @@ public class Client {
                 });
     }
 
-    public List<Memebr> getGroupMembers(int groupId) throws IOException {
+    public List<Member> getGroupMembers(int groupId) throws IOException {
 
         return get(
                 "groups/" + groupId + "/members",
-                new TypeReference<List<Memebr>>() {
+                new TypeReference<List<Member>>() {
                 });
     }
 
@@ -56,11 +56,11 @@ public class Client {
                 });
     }
 
-    public List<Memebr> getProjectMembers(int projectId) throws IOException {
+    public List<Member> getProjectMembers(int projectId) throws IOException {
 
         return get(
                 "projects/" + projectId + "/members",
-                new TypeReference<List<Memebr>>() {
+                new TypeReference<List<Member>>() {
                 });
     }
 
