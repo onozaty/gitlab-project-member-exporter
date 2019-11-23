@@ -17,7 +17,7 @@ public class ProjectMemberExporter {
 
         if (args.length != 3) {
             System.err.println(
-                    "usage: java -jar gitlab-project-member-exporter-all.jar <GitLab url> <access token> <export file path>");
+                    "usage: java -jar gitlab-project-member-exporter-all.jar <GitLab url> <personal access token> <export file path>");
             System.exit(1);
         }
 
@@ -32,11 +32,11 @@ public class ProjectMemberExporter {
         System.out.println("Export completed.");
     }
 
-    public void export(String gitLabUrl, String accessToken, Path exportFilePath) throws IOException {
+    public void export(String gitLabUrl, String personalAccessToken, Path exportFilePath) throws IOException {
 
         Client client = Client.builder()
                 .gitLabUrl(gitLabUrl)
-                .accessToken(accessToken)
+                .personalAccessToken(personalAccessToken)
                 .build();
 
         List<ProjectMember> projectMembers = new ProjectMemberCollector(client).collect();

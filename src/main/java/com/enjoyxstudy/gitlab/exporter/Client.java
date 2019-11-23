@@ -32,7 +32,7 @@ public class Client {
 
     private final String gitLabUrl;
 
-    private final String accessToken;
+    private final String personalAccessToken;
 
     @Default
     private final int perPage = 100;
@@ -104,7 +104,7 @@ public class Client {
 
         Request request = new Request.Builder()
                 .url(httpUrlBuilder.build())
-                .addHeader("Authorization", "Bearer " + accessToken)
+                .addHeader("Private-Token", personalAccessToken)
                 .build();
 
         Response response = httpClient.newCall(request).execute();
