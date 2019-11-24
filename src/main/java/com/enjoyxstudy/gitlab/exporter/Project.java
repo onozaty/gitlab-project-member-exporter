@@ -28,6 +28,10 @@ public class Project {
 
     private Namespace namespace;
 
+    private String createdAt;
+
+    private String lastActivityAt;
+
     @Data
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Namespace {

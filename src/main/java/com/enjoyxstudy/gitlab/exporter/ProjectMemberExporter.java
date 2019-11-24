@@ -8,6 +8,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
@@ -20,29 +26,93 @@ public class ProjectMemberExporter {
 
     public static void main(String[] args) throws IOException {
 
-        if (args.length != 2) {
-            System.err.println(
-                    "usage: java -jar gitlab-project-member-exporter-all.jar <config file path> <export file path>");
-            System.exit(1);
+        Options options = new Options();
+        options.addOption(
+                Option.builder("c")
+                        .desc("Config file path.")
+                        .hasArg()
+                        .argName("config file")
+                        .required()
+                        .build());
+
+        options.addOption(
+                Option.builder("pm")
+                        .desc("Project members export file path.")
+                        .hasArg()
+                        .argName("project members file")
+                        .build());
+        options.addOption(
+                Option.builder("p")
+                        .desc("Projects export file path.")
+                        .hasArg()
+                        .argName("projects file")
+                        .build());
+        options.addOption(
+                Option.builder("u")
+                        .desc("Users export file path.")
+                        .hasArg()
+                        .argName("users file")
+                        .build());
+
+        CommandLine line;
+        try {
+            line = new DefaultParser().parse(options, args);
+
+        } catch (ParseException e) {
+            System.out.println("Unexpected exception: " + e.getMessage());
+            printUsage(options);
+            return;
         }
 
-        Path configFilePath = Paths.get(args[0]);
-        Path exportFilePath = Paths.get(args[1]);
+        Path configFilePath = Paths.get(line.getOptionValue("c"));
 
         Config config = Config.of(configFilePath);
+
         Client client = Client.builder()
                 .gitLabUrl(config.getGitLabUrl())
                 .personalAccessToken(config.getPersonalAccessToken())
                 .build();
 
-        System.out.println("Export started.");
+        ProjectMemberExporter projectMemberExporter = new ProjectMemberExporter(client);
 
-        new ProjectMemberExporter(client).export(exportFilePath);
+        if (line.hasOption("pm")) {
 
-        System.out.println("Export completed.");
+            Path exportFilePath = Paths.get(line.getOptionValue("pm"));
+
+            System.out.println("Project members export has started.");
+            projectMemberExporter.exportProjectMembers(exportFilePath);
+            System.out.println("Project members export is complete.");
+        }
+
+        if (line.hasOption("p")) {
+
+            Path exportFilePath = Paths.get(line.getOptionValue("p"));
+
+            System.out.println("Projects export has started.");
+            projectMemberExporter.exportProjects(exportFilePath);
+            System.out.println("Projects export is complete.");
+        }
+
+        if (line.hasOption("u")) {
+
+            Path exportFilePath = Paths.get(line.getOptionValue("u"));
+
+            System.out.println("Users export has started.");
+            projectMemberExporter.exportUsers(exportFilePath);
+            System.out.println("Users export is complete.");
+        }
     }
 
-    public void export(Path exportFilePath) throws IOException {
+    private static void printUsage(Options options) {
+        HelpFormatter help = new HelpFormatter();
+        help.setWidth(100);
+
+        // ヘルプを出力
+        help.printHelp("java -jar gitlab-project-member-exporter-all.jar", options, true);
+        System.exit(1);
+    }
+
+    public void exportProjectMembers(Path exportFilePath) throws IOException {
 
         List<ProjectMember> projectMembers = new ProjectMemberCollector(client).collect();
 
@@ -75,6 +145,70 @@ public class ProjectMemberExporter {
                             member.getState(),
                             member.getPermission());
                 }
+            }
+        }
+    }
+
+    public void exportProjects(Path exportFilePath) throws IOException {
+
+        List<Project> projects = client.getProjects();
+
+        try (
+                Writer writer = Files.newBufferedWriter(exportFilePath, StandardCharsets.UTF_8);
+                CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL)) {
+
+            writer.write("\uFEFF"); // BOM
+
+            // Header
+            csvPrinter.printRecord(
+                    "Name",
+                    "Visibility",
+                    "Created at",
+                    "Last activity at");
+
+            for (Project project : projects) {
+
+                csvPrinter.printRecord(
+                        project.getNameWithNamespace(),
+                        project.getVisibility(),
+                        project.getCreatedAt(),
+                        project.getLastActivityAt());
+            }
+        }
+    }
+
+    public void exportUsers(Path exportFilePath) throws IOException {
+
+        List<User> users = client.getUsers();
+
+        try (
+                Writer writer = Files.newBufferedWriter(exportFilePath, StandardCharsets.UTF_8);
+                CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL)) {
+
+            writer.write("\uFEFF"); // BOM
+
+            // Header
+            csvPrinter.printRecord(
+                    "Name",
+                    "Username",
+                    "Email",
+                    "State",
+                    "Admin",
+                    "Created at",
+                    "Last sign in at",
+                    "Last activity on");
+
+            for (User user : users) {
+
+                csvPrinter.printRecord(
+                        user.getName(),
+                        user.getUsername(),
+                        user.getEmail(),
+                        user.getState(),
+                        user.isAdmin(),
+                        user.getCreatedAt(),
+                        user.getLastSignInAt(),
+                        user.getLastActivityOn());
             }
         }
     }

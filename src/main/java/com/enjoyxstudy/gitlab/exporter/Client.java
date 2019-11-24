@@ -69,6 +69,14 @@ public class Client {
                 });
     }
 
+    public List<User> getUsers() throws IOException {
+
+        return get(
+                "users",
+                new TypeReference<List<User>>() {
+                });
+    }
+
     private <T> List<T> get(String endpoint, TypeReference<List<T>> typeReference)
             throws IOException {
 
