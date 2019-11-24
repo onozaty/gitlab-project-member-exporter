@@ -11,33 +11,38 @@ import java.util.List;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class ProjectMemberExporter {
+
+    private final Client client;
 
     public static void main(String[] args) throws IOException {
 
-        if (args.length != 3) {
+        if (args.length != 2) {
             System.err.println(
-                    "usage: java -jar gitlab-project-member-exporter-all.jar <GitLab url> <personal access token> <export file path>");
+                    "usage: java -jar gitlab-project-member-exporter-all.jar <config file path> <export file path>");
             System.exit(1);
         }
 
-        String gitLabUrl = args[0];
-        String accessToken = args[1];
-        Path exportFilePath = Paths.get(args[2]);
+        Path configFilePath = Paths.get(args[0]);
+        Path exportFilePath = Paths.get(args[1]);
+
+        Config config = Config.of(configFilePath);
+        Client client = Client.builder()
+                .gitLabUrl(config.getGitLabUrl())
+                .personalAccessToken(config.getPersonalAccessToken())
+                .build();
 
         System.out.println("Export started.");
 
-        new ProjectMemberExporter().export(gitLabUrl, accessToken, exportFilePath);
+        new ProjectMemberExporter(client).export(exportFilePath);
 
         System.out.println("Export completed.");
     }
 
-    public void export(String gitLabUrl, String personalAccessToken, Path exportFilePath) throws IOException {
-
-        Client client = Client.builder()
-                .gitLabUrl(gitLabUrl)
-                .personalAccessToken(personalAccessToken)
-                .build();
+    public void export(Path exportFilePath) throws IOException {
 
         List<ProjectMember> projectMembers = new ProjectMemberCollector(client).collect();
 
