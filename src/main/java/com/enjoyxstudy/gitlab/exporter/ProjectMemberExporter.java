@@ -53,7 +53,13 @@ public class ProjectMemberExporter {
             writer.write("\uFEFF"); // BOM
 
             // Header
-            csvPrinter.printRecord("Project", "User: Name", "User: Username", "User: State", "Permission");
+            csvPrinter.printRecord(
+                    "Project: Name",
+                    "Project: Visibility",
+                    "User: Name",
+                    "User: Username",
+                    "User: State",
+                    "Permission");
 
             for (ProjectMember projectMember : projectMembers) {
 
@@ -63,6 +69,7 @@ public class ProjectMemberExporter {
                 for (Member member : members) {
                     csvPrinter.printRecord(
                             project.getNameWithNamespace(),
+                            project.getVisibility(),
                             member.getName(),
                             member.getUsername(),
                             member.getState(),
