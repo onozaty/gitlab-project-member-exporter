@@ -105,7 +105,8 @@ public class ProjectMemberExporter {
 
     private static void printUsage(Options options) {
         HelpFormatter help = new HelpFormatter();
-        help.setWidth(100);
+        help.setWidth(200);
+        help.setOptionComparator(null); // 順番を変えない
 
         // ヘルプを出力
         help.printHelp("java -jar gitlab-project-member-exporter-all.jar", options, true);
