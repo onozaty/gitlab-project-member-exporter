@@ -1,28 +1,28 @@
 # gitlab-project-member-exporter
 
-A tool that exports the list of members of each project of GitLab.
+GitLabの各プロジェクトのメンバー一覧を出力するツールです。
 
-## Usage
+## 利用方法
 
-Java (JDK8 or higher) is required for execution.
+実行にはJava(JDK8以上)が必要となります。
 
-Download the latest jar file (`gitlab-project-member-exporter-x.x.x-all.jar`) from below.
+下記から最新の実行ファイル(`gitlab-project-member-exporter-x.x.x-all.jar`)を入手します。
 
 * https://github.com/onozaty/gitlab-project-member-exporter/releases/latest
 
-Execute the application with the following command.
+入手したjarファイルを指定してアプリケーションを実行します。
 
 ```
 java -jar gitlab-project-member-exporter-1.0.0-all.jar -c config.json -pm project-members.csv -p projects.csv -u users.csv
 ```
 
-Use GitLab API to export the following information as a CSV file.
+GitLabのAPIを利用して、下記の情報がCSVファイルとしてエクスポートされます。
 
-* Project member list
-* Project list
-* User list
+* プロジェクトメンバ一覧
+* プロジェクト一覧
+* ユーザ一覧
 
-## Command description
+## コマンドの説明
 
 ```console
 usage: java -jar gitlab-project-member-exporter-all.jar -c <config file> [-pm <project members file>] [-p <projects file>] [-u <users file>]
@@ -32,13 +32,13 @@ usage: java -jar gitlab-project-member-exporter-all.jar -c <config file> [-pm <p
  -u <users file>              Users export file path.
 ```
 
-You can specify the following as an argument.
+引数として下記を指定できます。
 
 ### `-c <config file>`
 
-Configuration file path. This is required.
+設定ファイルのパスです。必須項目となります。
 
-Set the GitLab URL and personal access token in the configuration file.
+設定ファイルにはGitLabのURLと、パーソナルアクセストークンを記載します。
 
 ```json
 {
@@ -47,14 +47,14 @@ Set the GitLab URL and personal access token in the configuration file.
 }
 ```
 
-See below for how to obtain a personal access token.
+パーソナルアクセストークンの取得方法は、下記をご参照ください。
 
 * [Personal access tokens \| GitLab](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
 
 ### `-pm <project members file>`
 
-Output file path of the project member list.  
-The following information is output in CSV format.
+プロジェクトメンバー一覧の出力先ファイルパスです。  
+CSV形式で下記の情報が出力されます。
 
 * `Project: Name`
 * `Project: Visibility`
@@ -73,12 +73,12 @@ group1 / project-a,private,user2,user2,active,Developer
 group1 / project-a,private,user1,user1,blocked,Maintainer
 ```
 
-If authority is granted to the group, it is output that each project under the group has authority.
+グループに対して権限が付与されていた場合、グループ配下の各プロジェクトに権限があるものとして出力します。
 
 ### `-p <projects file>`
 
-Output file path of the project list.  
-The following information is output in CSV format.
+プロジェクト一覧の出力先ファイルパスです。  
+CSV形式で下記の情報が出力されます。
 
 * `Name`
 * `Visibility`
@@ -94,8 +94,8 @@ group1 / project-a,private,2019-11-16T13:44:20.849Z,2019-11-16T13:44:20.849Z
 
 ### `-u <users file>`
 
-Output file path of the user list.  
-The following information is output in CSV format.
+ユーザ一覧の出力先ファイルパスです。  
+CSV形式で下記の情報が出力されます。
 
 * `Name`
 * `Username`
@@ -114,12 +114,12 @@ user1,user1,user1@example.com,blocked,false,2019-11-16T13:35:44.406Z,,
 Administrator,root,admin@example.com,active,true,2019-11-16T07:50:47.821Z,2019-11-24T14:50:54.996Z,2019-11-25
 ```
 
-## How to build
+## ビルド方法
 
-When building from the source code, build the application with the following command in the environment where Java (JDK 8 or higher) is installed.
+ソースコードからビルドして利用する場合、Java(JDK8以上)がインストールされた環境で、下記コマンドでアプリケーションをビルドします。
 
 ```
 gradlew shadowJar
 ```
 
-`build/libs/gitlab-project-member-exporter-x.x.x-all.jar` will be created. (`x.x.x` is version number)
+`build/libs/gitlab-project-member-exporter-x.x.x-all.jar`という実行ファイルが出来上がります。(`x.x.x`はバージョン番号)
