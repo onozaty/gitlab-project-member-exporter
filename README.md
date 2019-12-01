@@ -73,6 +73,15 @@ group1 / project-a,private,user2,user2,active,Developer
 group1 / project-a,private,user1,user1,blocked,Maintainer
 ```
 
+| Project: Name              | Project: Visibility | User: Name    | User: Username | User: State | Permission |
+|----------------------------|---------------------|---------------|----------------|-------------|------------|
+| Administrator / my-project | private             | Administrator | root           | active      | Maintainer |
+| group1 / project-b         | private             | Administrator | root           | active      | Owner      |
+| group1 / project-b         | private             | user2         | user2          | active      | Developer  |
+| group1 / project-a         | private             | Administrator | root           | active      | Owner      |
+| group1 / project-a         | private             | user2         | user2          | active      | Developer  |
+| group1 / project-a         | private             | user1         | user1          | blocked     | Maintainer |
+
 If authority is granted to the group, it is output that each project under the group has authority.
 
 ### `-p <projects file>`
@@ -91,6 +100,12 @@ Administrator / my-project,private,2019-11-16T13:48:47.727Z,2019-11-16T13:48:47.
 group1 / project-b,private,2019-11-16T13:48:11.161Z,2019-11-24T15:08:11.024Z
 group1 / project-a,private,2019-11-16T13:44:20.849Z,2019-11-16T13:44:20.849Z
 ```
+
+| Name                       | Visibility | Created at               | Last activity at         |
+|----------------------------|------------|--------------------------|--------------------------|
+| Administrator / my-project | private    | 2019-11-16T13:48:47.727Z | 2019-11-16T13:48:47.727Z |
+| group1 / project-b     | private    | 2019-11-16T13:48:11.161Z | 2019-11-24T15:08:11.024Z |
+| group1 / project-a     | private    | 2019-11-16T13:44:20.849Z | 2019-11-16T13:44:20.849Z |
 
 ### `-u <users file>`
 
@@ -113,6 +128,13 @@ user2,user2,user2@example.com,active,false,2019-11-16T13:36:29.651Z,,
 user1,user1,user1@example.com,blocked,false,2019-11-16T13:35:44.406Z,,
 Administrator,root,admin@example.com,active,true,2019-11-16T07:50:47.821Z,2019-11-24T14:50:54.996Z,2019-11-25
 ```
+
+| Name          | Username | Email             | State   | Admin | Created at               | Last sign in at          | Last activity on |
+|---------------|----------|-------------------|---------|-------|--------------------------|--------------------------|------------------|
+| user3         | user3    | user3@example.com | active  | FALSE | 2019-11-16T13:37:15.885Z |                          |                  |
+| user2         | user2    | user2@example.com | active  | FALSE | 2019-11-16T13:36:29.651Z |                          |                  |
+| user1         | user1    | user1@example.com | blocked | FALSE | 2019-11-16T13:35:44.406Z |                          |                  |
+| Administrator | root     | admin@example.com | active  | TRUE  | 2019-11-16T07:50:47.821Z | 2019-11-24T14:50:54.996Z | 2019-11-25       |
 
 ## How to build
 
